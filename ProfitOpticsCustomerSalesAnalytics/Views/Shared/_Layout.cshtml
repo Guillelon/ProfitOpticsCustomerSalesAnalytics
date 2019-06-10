@@ -1,0 +1,201 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProfitOptics Inc. - Sales Analytics</title>
+    <link rel="icon" href="https://profitoptics.com/wp-content/uploads/2018/01/cropped-symbol_512x512_transparent-32x32.png" sizes="32x32">
+    <!-- Global stylesheets -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet" type="text/css">
+    <link href="/Content/styles.min.css" rel="stylesheet" />
+    <link href="/Content/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="/Content/bootstrap_limitless.min.css" rel="stylesheet" type="text/css">
+    <link href="/Content/layout.min.css" rel="stylesheet" type="text/css">
+    <link href="/Content/components.min.css" rel="stylesheet" type="text/css">
+    <link href="/Content/colors.min.css" rel="stylesheet" type="text/css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.css" rel="stylesheet" type="text/css">
+    <script src="/Scripts/jquery.min.js"></script>
+    <script src="/Scripts/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
+    <script src="/Scripts/currencyFormat.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+</head>
+<body>
+    <!-- Main navbar -->
+    <div class="navbar navbar-expand-md navbar-light">
+        <!-- Header with logos -->
+        <div class="navbar-header navbar-dark d-none d-md-flex align-items-md-center">
+            <div class="navbar-brand navbar-brand-md">
+                <a href="@Url.Action("Index","Home", null)" class="d-inline-block">
+                    <img src="/Images/logo_light.png" alt="">
+                </a>
+            </div>
+
+            <div class="navbar-brand navbar-brand-xs">
+                <a href="@Url.Action("Index","Home", null)" class="d-inline-block">
+                </a>
+            </div>
+        </div>
+        <!-- /header with logos -->
+        <!-- Mobile controls -->
+        <div class="d-flex flex-1 d-md-none">
+            <div class="navbar-brand mr-auto">
+                <a href="index.html" class="d-inline-block">
+                    <img src="/Images/logo_dark.png" alt="">
+                </a>
+            </div>
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-mobile">
+                <i class="icon-tree5"></i>
+            </button>
+
+            <button class="navbar-toggler sidebar-mobile-main-toggle" type="button">
+                <i class="icon-paragraph-justify3"></i>
+            </button>
+        </div>
+        <!-- /mobile controls -->
+    </div>
+
+    <!-- Page content -->
+    <div class="page-content">
+        <!-- Main sidebar -->
+        <div class="sidebar sidebar-dark sidebar-main sidebar-expand-md">
+            <!-- Sidebar mobile toggler -->
+            <div class="sidebar-mobile-toggler text-center">
+                <a href="#" class="sidebar-mobile-main-toggle">
+                    <i class="icon-arrow-left8"></i>
+                </a>
+                Navigation
+                <a href="#" class="sidebar-mobile-expand">
+                    <i class="icon-screen-full"></i>
+                    <i class="icon-screen-normal"></i>
+                </a>
+            </div>
+            <!-- /sidebar mobile toggler -->
+            <!-- Sidebar content -->
+            <div class="sidebar-content">
+
+                <!-- User menu -->
+                <div class="sidebar-user">
+                    <div class="card-body">
+                        <div class="media">
+                            <div class="mr-3">
+                                <a href="#"><img src="/Images/placeholders/placeholder.jpg" width="38" height="38" class="rounded-circle" alt=""></a>
+                            </div>
+
+                            <div class="media-body">
+                                <div class="media-title font-weight-semibold">Guillermo Oramas</div>
+                                <div class="font-size-xs opacity-50">
+                                    <i class="icon-pin font-size-sm"></i> &nbsp;Panama, Panama.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /user menu -->
+                <!-- Main navigation -->
+                <div class="card card-sidebar-mobile">
+                    <ul class="nav nav-sidebar" data-nav-type="accordion">
+
+                        <!-- Main -->
+                        <li class="nav-item-header"><div class="text-uppercase font-size-xs line-height-xs">Main</div> <i class="icon-menu" title="Main"></i></li>
+                        <li class="nav-item">
+                            @if (Request.Url.AbsoluteUri.Contains("Home/Index"))
+                            {
+                                <a href="/Home/Index" class="nav-link active">
+                                    <i class="icon-home4"></i>
+                                    <span>
+                                        Dashboard
+                                    </span>
+                                </a>
+                            }
+                            else
+                            {
+
+                                <a href="/Home/Index" class="nav-link">
+                                    <i class="icon-home4"></i>
+                                    <span>
+                                        Dashboard
+                                    </span>
+                                </a>
+                            }
+                        </li>
+                        <li class="nav-item">
+                            @if (Request.Url.AbsoluteUri.Contains("Growth"))
+                            {
+
+                                <a href="/Report/Growth" class="nav-link active">
+                                    <i class="icon-file-stats"></i>
+                                    <span>
+                                        Report - Growth
+                                    </span>
+                                </a>
+                            }
+                            else
+                            {
+
+                                <a href="/Report/Growth" class="nav-link">
+                                    <i class="icon-file-stats"></i>
+                                    <span>
+                                        Report - Growth
+                                    </span>
+                                </a>
+                            }
+                        </li>
+                        <li class="nav-item">
+                            @if (Request.Url.AbsoluteUri.Contains("Profit"))
+                            {
+
+                                <a href="/Report/Profit" class="nav-link active">
+                                    <i class="icon-file-stats"></i>
+                                    <span>
+                                        Report - Profit
+                                    </span>
+                                </a>
+                            }
+                            else
+                            {
+
+                                <a href="/Report/Profit" class="nav-link">
+                                    <i class="icon-file-stats"></i>
+                                    <span>
+                                        Report - Profit
+                                    </span>
+                                </a>
+                            }
+                        </li>
+                        <li class="nav-item">
+                            @if (Request.Url.AbsoluteUri.Contains("Sales"))
+                            {
+
+                                <a href="/Report/Sales" class="nav-link active">
+                                    <i class="icon-file-stats"></i>
+                                    <span>
+                                        Report - Sales
+                                    </span>
+                                </a>
+                            }
+                            else
+                            {
+
+                                <a href="/Report/Sales" class="nav-link">
+                                    <i class="icon-file-stats"></i>
+                                    <span>
+                                        Report - Sales
+                                    </span>
+                                </a>
+                            }
+                        </li>
+                        <!-- /main -->
+                    </ul>
+                </div>
+                <!-- /main navigation -->
+            </div>
+            <!-- /sidebar content -->
+        </div>
+        <div class="content-wrapper">
+            @RenderBody()
+        </div>
+    </div>
+</body>
+</html>

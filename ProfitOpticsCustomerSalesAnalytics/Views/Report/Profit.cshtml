@@ -1,0 +1,65 @@
+﻿@model DAL.DTOs.ProfitReportDTO
+<div class="content" style="padding-top: 25px">
+    <div class="card">
+        <div class="card-header header-elements-inline">
+            <h5 class="card-title">2018 Profits</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div id="costumerReport"></div>
+                </div>
+                <div class="col-md-6">
+                    <div id="itemReport"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    google.charts.load('current', { packages: ['corechart'] });
+    google.charts.setOnLoadCallback(Init);
+
+    function Init() {
+        var customerJson = JSON.parse('@Html.Raw(Json.Encode(Model.ProfitableCustomers
+                                                                .Select(m => new { m.Name, m.AccumulatedGP })))');
+
+        var itemsJson =  JSON.parse('@Html.Raw(Json.Encode(Model.ProfitableItems
+                                                                .Select(m => new { m.Name, m.AccumulatedGP })))');
+
+        drawBasic("costumerReport", customerJson, "Most profitable customers in 2018");
+        drawBasic("itemReport", itemsJson, "Most profitable items in 2018");
+    }
+
+    function drawBasic(divId, json, charTitle)
+    {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Name');
+        data.addColumn('number', 'AccumulatedGP');
+        data.addColumn({ 'type': 'string', 'role': 'tooltip', 'p': { 'html': true } });
+
+        $.each(json, function (i, obj) {
+            var name = obj.Name;
+            var growth = parseFloat(obj.AccumulatedGP);
+            data.addRow([name, growth, createCustomToolTip(obj)]);
+        });
+        var options = {
+            tooltip: { isHtml: true },
+            title: charTitle,
+            width: 500,
+            height: 600,
+            legend: { position: "none" },
+        };
+
+        var chart = new google.visualization.BarChart(document.getElementById(divId));
+
+        chart.draw(data, options);
+    }
+
+    function createCustomToolTip(object) {
+        return '<div style="min-width: 150px;padding:5px 5px 5px 5px;"> ' +
+            '<div style="text-align:center"><h4>GP: ' + object.AccumulatedGP.formatMoney(2) + '</h4></div>' +
+            '</div>';
+    }
+</script>

@@ -1,0 +1,105 @@
+﻿@model DAL.DTOs.ReportSalesDTO
+<div class="content" style="padding-top: 25px">
+    <div class="card">
+        <div class="card-header header-elements-inline">
+            <h4 class="card-title">Sales</h4>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-11">
+                    <div id="salesReport"></div>
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-md-4">
+                    <div id="sourceSalesReport"></div>
+                </div>
+                <div class="col-md-4">
+                    <div id="categorySalesReport"></div>
+                </div>
+                <div class="col-md-4">
+                    <div id="statesSalesReport"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    google.charts.load('current', { packages: ['line'] });
+    google.charts.load('current', { packages: ['corechart'] });
+    google.charts.setOnLoadCallback(Init);
+
+    function Init() {
+        var firstYearJson = JSON.parse('@Html.Raw(Json.Encode(Model.FirstYear
+                                                            .Select(m => new { m.Month, m.SalesAmount, m.SalesCount })))');
+
+        var secondYearJson =  JSON.parse('@Html.Raw(Json.Encode(Model.SecondYear
+                                                                .Select(m => new { m.Month, m.SalesAmount, m.SalesCount })))');
+
+        var salesBySourceJson = JSON.parse('@Html.Raw(Json.Encode(Model.SalesBySource
+                                                                .Select(m => new { m.Name, m.SalesAmount, m.SalesCount })))');
+
+        var salesByCategoryJson = JSON.parse('@Html.Raw(Json.Encode(Model.SalesByCategory
+                                                                .Select(m => new { m.Name, m.SalesAmount, m.SalesCount })))');
+
+        var salesByStateJson = JSON.parse('@Html.Raw(Json.Encode(Model.SalesByState
+                                                                .Select(m => new { m.Name, m.SalesAmount, m.SalesCount })))');
+
+        //First Chart
+        var dataA = new google.visualization.DataTable();
+        dataA.addColumn('number', 'Month');
+        dataA.addColumn('number', '2017');
+        dataA.addColumn('number', '2018');
+
+        for (var i = 0; i < firstYearJson.length; i++) {
+            dataA.addRow([(i + 1), firstYearJson[i].SalesAmount, secondYearJson[i].SalesAmount]);
+        }
+
+        var options = {
+            chart: {
+                title: 'Sales by Month (17 vs 18)'
+            },
+            height: 300
+        };
+
+        var chart = new google.charts.Line(document.getElementById('salesReport'));
+        chart.draw(dataA, options);
+
+        DrawPieChart(salesBySourceJson, 'Top 3 Most Selled Source', 'sourceSalesReport');
+        DrawPieChart(salesByCategoryJson, 'Top 3 Most Selled Categories', 'categorySalesReport');
+        DrawPieChart(salesByStateJson, 'Top 3 Most States by Sellings', 'statesSalesReport');
+    }
+
+    function DrawPieChart(json, title, targetDiv) {
+        //Second Chart
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Name');
+        data.addColumn('number', 'Amount');
+        data.addColumn({ 'type': 'string', 'role': 'tooltip', 'p': { 'html': true } });
+
+        $.each(json, function (i, obj) {
+            var name = obj.Name;
+            var amount = parseFloat(obj.SalesAmount);
+            data.addRow([name, amount, createCustomToolTip(obj)]);
+        });
+
+        var options = {
+            tooltip: { isHtml: true },
+            title: title,
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById(targetDiv));
+
+        chart.draw(data, options);
+    }
+
+    function createCustomToolTip(obj) {
+        return '<div style="min-width: 150px;padding:5px 5px 5px 5px;"> ' +
+            '<strong>Amount:</strong> ' + obj.SalesAmount.formatMoney(2) +
+            '<br/> ' +
+            '<strong># Of Sales:</strong> ' + obj.SalesCount +
+            '</div>';
+    }
+</script>
