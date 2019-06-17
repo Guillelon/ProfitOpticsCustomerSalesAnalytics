@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Script.Serialization;
 
 namespace ProfitOpticsCustomerSalesAnalytics.Controllers
 {
@@ -44,6 +45,29 @@ namespace ProfitOpticsCustomerSalesAnalytics.Controllers
             return View(dto);
         }
 
-        
+        public ActionResult SalesByCustomer()
+        {
+            
+            return View();
+        }
+
+        public string GetCustomerByName(string query)
+        {
+            var dto = _repo.GetUserByNameContains(query);
+            var json = new JavaScriptSerializer().Serialize(dto);
+            return json;
+        }
+
+        public PartialViewResult GetUserSalesInformation(string query)
+        {
+            var dto = new SalesByCustomerReportDTO();
+            dto.TopItems = _repo.GetTopItemsByUser(query);
+            if (dto.TopItems.Count > 0)
+            {
+                var topItem = dto.TopItems.OrderByDescending(i => i.ItemQuantity).First();
+                dto.TopItemHistory = _repo.GetHistoryByCustomerAndItem(query, topItem.Number);
+            }
+            return PartialView("_PartialSalesByCustomer", dto);
+        }
     }
 }

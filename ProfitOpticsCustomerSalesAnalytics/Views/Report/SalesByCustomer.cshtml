@@ -1,0 +1,66 @@
+﻿<div class="content" style="padding-top: 25px">
+    <div class="card">
+        <div class="card-header header-elements-inline">
+            <h4 class="card-title">Sales</h4>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <select style="height: 50px" id="customerList" class="js-data-example-ajax form-control"></select>
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-info" id="searchCustomerInformation" disabled>Search</button>
+                </div>
+            </div>
+            <hr />
+            <div id="result">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('.js-data-example-ajax').select2({
+        width: '100%',
+        height: '50',
+        minimumInputLength: 3,
+        tags: [],
+        ajax: {
+            url: '/Report/GetCustomerByName',
+            type: "POST",
+            dataType: "json",
+            delay: 1000,
+            data: function (term) {
+                return {
+                    query: term.term
+                };
+            },
+            processResults: function (data) {
+                var res = data.map(function (item) {
+                    return { id: item.Number, text: item.Name };
+                });
+                return {
+                    results: res
+                };
+            }
+        }
+    });
+
+    $('#customerList').on("select2:selecting", function (e) {
+        $('#searchCustomerInformation').attr("disabled", false);
+    });
+
+    $('#searchCustomerInformation').click(function () {
+        var userNumber = $('#customerList').val();
+        $.ajax({
+            url: '/Report/GetUserSalesInformation?query=' + userNumber,
+            type: 'GET',
+            success: function (data) {
+                $('#result').html(data);
+            }
+        });
+    });
+
+    
+</script>

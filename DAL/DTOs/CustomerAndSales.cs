@@ -57,6 +57,38 @@ namespace DAL.DTOs
         public Decimal AccumulatedGP { get; set; }
     }
 
+    public class ItemsSalesByCustomer
+    {
+        public string Name { get; set; }
+        public DateTime Date { get; set; }
+        public string Number { get; set; }
+        public int SalesCount { get; set; }
+        public decimal ItemQuantity { get; set; }
+        public decimal Amount { get; set; }
+        public decimal Cost { get; set; }
+    }
+
+    public class SalesByCustomerReportDTO
+    {
+        public IList<ItemsSalesByCustomer> TopItems { get; set; }
+        public IList<ItemsSalesByCustomer> TopItemHistory { get; set; }
+        public string TopItemName { get; set; }
+        public string CustomerName { get; set; }
+        public SalesByCustomerReportDTO()
+        {
+            TopItems = new List<ItemsSalesByCustomer>();
+            TopItemHistory = new List<ItemsSalesByCustomer>();
+
+        }
+    }
+
+    public class CustomerDTO
+    {
+        public string Number { get; set; }
+        public string Name { get; set; }
+        public string State { get; set; }
+    }
+
     public class ReportGrowthDTO
     {
         public IList<CustomerItemGrowthDTO> Costumers { get; set; }

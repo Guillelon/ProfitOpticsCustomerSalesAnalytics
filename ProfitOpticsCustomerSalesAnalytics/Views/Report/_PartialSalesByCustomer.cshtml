@@ -1,0 +1,72 @@
+﻿@model DAL.DTOs.SalesByCustomerReportDTO
+
+<div class="row">
+    <div class="col-md-8">
+        <div id="sourceSalesReport"></div>
+    </div>
+    <div class="col-md-3">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Sales</th>
+                    <th>Total Quantity</th>
+                    <th>Total Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.TopItems)
+                {
+                    <tr>
+                        <td>
+                            @item.Name
+                        </td>
+                        <td>
+                            @item.SalesCount
+                        </td>
+                        <td>
+                            @((int)item.ItemQuantity)
+                        </td>
+                        <td>
+                            @String.Format("{0:C}", item.Amount)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    google.charts.load('current', { packages: ['line'] });
+    google.charts.setOnLoadCallback(Init);
+
+    function Init() {
+        var topItemHistory = JSON.parse('@Html.Raw(Json.Encode(Model.TopItemHistory
+                                                            .Select(m => new { m.Date, m.ItemQuantity })))');
+
+        //First Chart
+        var dataA = new google.visualization.DataTable();
+        dataA.addColumn('date', 'Date');
+        dataA.addColumn('number', 'Quantity');
+
+        var formatDate = new google.visualization.DateFormat({
+            pattern: 'yyyy-MM-dd hh:mm:ss'
+        });
+
+        for (var i = 0; i < topItemHistory.length; i++) {
+            var date = new Date(topItemHistory[i].Date.match(/\d+/)[0] * 1);
+            dataA.addRow([date, topItemHistory[i].ItemQuantity]);
+        }
+
+        var options = {
+            chart: {
+                title: 'Sales by Month (17 vs 18)'
+            },
+            height: 300
+        };
+
+        var chart = new google.charts.Line(document.getElementById('sourceSalesReport'));
+        chart.draw(dataA, options);
+    }
+</script>

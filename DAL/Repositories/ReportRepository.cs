@@ -132,5 +132,50 @@ namespace DAL.Repositories
             var result = _context.Database.SqlQuery<SalesByParameter>(query).ToList();
             return result;
         }
+
+        public IList<CustomerDTO> GetUserByNameContains(string name)
+        {
+            var query = "SELECT NUMBER, NAME, STATE FROM [dbo].[Customers] WHERE NAME LIKE '%"+name+"%' ";
+            var result = _context.Database.SqlQuery<CustomerDTO>(query).ToList();
+            return result;
+        }
+
+        public IList<ItemsSalesByCustomer> GetTopItemsByUser(string customerNumber)
+        {
+            try
+            {
+                var query = "SELECT TOP 10 IT.Description AS 'Name', IT.Number AS 'Number', COUNT(*) AS 'SalesCount', " +
+                            "CONVERT(DECIMAL(10, 2), ROUND(SUM(CIH.Sales),2)) AS 'Amount', CONVERT(DECIMAL(10, 2), ROUND(SUM(CIH.InvoiceQuantity),2)) AS 'ItemQuantity' " +
+                            "FROM [dbo].[CustomerItemsHistory] CIH, [dbo].[Items] IT " +
+                            "WHERE CIH.CustomerNumber = '" + customerNumber + "' AND CIH.ItemNumber = IT.Number" +
+                            "  AND CIH.TransactionType = 'Invoice'" +
+                            "GROUP BY IT.Description, IT.Number " +
+                            "ORDER BY 'SalesCount' DESC ";
+
+                var result = _context.Database.SqlQuery<ItemsSalesByCustomer>(query).ToList();
+                return result;
+
+            }
+            catch(Exception e)
+            {
+                var hola = e;
+                return null;
+            }
+        }
+
+        public IList<ItemsSalesByCustomer> GetHistoryByCustomerAndItem(string customerNumber, string itemNumber)
+        {
+            var query = "SELECT CIH.InvoiceDate AS 'Date',CIH.InvoiceQuantity AS 'ItemQuantity', " +
+                       " CONVERT(DECIMAL(10, 2), ROUND(CIH.Sales, 2)) AS 'Amount', " +
+                       " CONVERT(DECIMAL(10, 2), ROUND(CIH.InvoiceCost * CIH.InvoiceQuantity, 2)) AS 'Cost' " +
+                       " FROM CustomerItemsHistory CIH, Items IT " +
+                       " WHERE CIH.ItemNumber = '"+itemNumber+"'" +
+                       " AND CIH.CustomerNumber = '"+ customerNumber+"'" +
+                       " AND CIH.ItemNumber = IT.Number" +
+                       " AND CIH.TransactionType = 'Invoice'";
+
+            var result = _context.Database.SqlQuery<ItemsSalesByCustomer>(query).ToList();
+            return result;
+        }
     }
 }
