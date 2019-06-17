@@ -177,5 +177,12 @@ namespace DAL.Repositories
             var result = _context.Database.SqlQuery<ItemsSalesByCustomer>(query).ToList();
             return result;
         }
+
+        public CustomerDTO GetByNumber(string number)
+        {
+            var query = "SELECT Name, Number, State  FROM Customers WHERE Number = '" + number + "'";
+            var result = _context.Database.SqlQuery<CustomerDTO>(query).ToList();
+            return result.FirstOrDefault();
+        }
     }
 }

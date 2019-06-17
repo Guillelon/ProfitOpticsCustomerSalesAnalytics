@@ -73,7 +73,7 @@ namespace DAL.DTOs
         public IList<ItemsSalesByCustomer> TopItems { get; set; }
         public IList<ItemsSalesByCustomer> TopItemHistory { get; set; }
         public string TopItemName { get; set; }
-        public string CustomerName { get; set; }
+        public CustomerDTO Customer { get; set; }
         public SalesByCustomerReportDTO()
         {
             TopItems = new List<ItemsSalesByCustomer>();

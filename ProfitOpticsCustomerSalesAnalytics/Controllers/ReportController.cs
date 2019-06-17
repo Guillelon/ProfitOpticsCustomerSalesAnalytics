@@ -62,9 +62,11 @@ namespace ProfitOpticsCustomerSalesAnalytics.Controllers
         {
             var dto = new SalesByCustomerReportDTO();
             dto.TopItems = _repo.GetTopItemsByUser(query);
+            dto.Customer = _repo.GetByNumber(query);
             if (dto.TopItems.Count > 0)
             {
                 var topItem = dto.TopItems.OrderByDescending(i => i.ItemQuantity).First();
+                dto.TopItemName = topItem.Name;
                 dto.TopItemHistory = _repo.GetHistoryByCustomerAndItem(query, topItem.Number);
             }
             return PartialView("_PartialSalesByCustomer", dto);
