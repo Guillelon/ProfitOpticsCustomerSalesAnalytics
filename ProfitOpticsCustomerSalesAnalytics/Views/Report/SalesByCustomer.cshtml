@@ -1,7 +1,7 @@
 ﻿<div class="content" style="padding-top: 25px">
     <div class="card">
         <div class="card-header header-elements-inline">
-            <h4 class="card-title">Sales</h4>
+            <h4 class="card-title">Customer Sales Information</h4>
         </div>
         <div class="card-body">
             <div class="row">
@@ -23,9 +23,9 @@
 <script>
     $('.js-data-example-ajax').select2({
         width: '100%',
-        height: '50',
         minimumInputLength: 3,
         tags: [],
+        placeholder: "Please enter the name to search",
         ajax: {
             url: '/Report/GetCustomerByName',
             type: "POST",
